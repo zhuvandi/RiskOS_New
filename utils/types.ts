@@ -10,4 +10,9 @@ export interface Trade {
     leverage_used?: number;
     win?: boolean;
     time_in_trade_mins?: number;
+    // Trading Journal additions
+    pair?: string;
+    entry_price?: number;
+    stop_loss?: number;
+    emotion_score?: number; // 1-10
 }

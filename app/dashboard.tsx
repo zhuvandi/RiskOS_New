@@ -1,5 +1,7 @@
+```
 import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useState, useMemo, useCallback } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../components/AuthContext';
 import { calculateRisk, RiskInput } from '../utils/riskEngine';
@@ -12,13 +14,15 @@ export default function DashboardScreen() {
     const [trades, setTrades] = useState<Trade[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (!session) {
-            router.replace('/login');
-            return;
-        }
-        fetchTrades();
-    }, [session]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!session) {
+        router.replace('/login');
+        return;
+      }
+      fetchTrades();
+    }, [session])
+  );
 
     const fetchTrades = async () => {
         if (!user) return;
@@ -108,8 +112,7 @@ export default function DashboardScreen() {
             <View className="flex-row justify-between items-center mb-10">
                 <View>
                     <Text className="text-zinc-400 text-sm font-semibold uppercase tracking-widest">System Status</Text>
-                    <Text className={`text-4xl font-black mt-1 ${getStatusColor(riskResult.status)}`}>
-                        {trades.length === 0 ? 'NO DATA' : riskResult.status}
+                    <Text className={`text - 4xl font - black mt - 1 ${ getStatusColor(riskResult.status) } `}>                        {trades.length === 0 ? 'NO DATA' : riskResult.status}
                     </Text>
                 </View>
                 <TouchableOpacity onPress={handleLogout} className="bg-zinc-800 px-4 py-2 rounded-lg">
@@ -149,9 +152,23 @@ export default function DashboardScreen() {
                 </View>
             </View>
 
-            <View className="mt-auto">
-                <Text className="text-zinc-600 text-center text-xs">RiskOS Next Gen Dashboard</Text>
-            </View>
+            <View className="mt-auto pb-4">
+        <View className="flex-row space-x-4 mb-4">
+          <TouchableOpacity 
+            className="flex-1 bg-zinc-900 border border-zinc-800 py-4 rounded-xl items-center active:bg-zinc-800"
+            onPress={() => router.push('/history')}
+          >
+            <Text className="text-zinc-300 font-bold">History</Text>
+          </TouchableOpacity>
+           <TouchableOpacity 
+            className="flex-1 bg-red-600 rounded-xl py-4 items-center active:bg-red-700 shadow-sm shadow-red-900"
+            onPress={() => router.push('/add-trade')}
+          >
+            <Text className="text-white font-bold">+ New Trade</Text>
+          </TouchableOpacity>
         </View>
-    );
+        <Text className="text-zinc-600 text-center text-xs mt-2">RiskOS Next Gen Dashboard</Text>
+      </View>
+    </View>
+  );
 }
